@@ -1,16 +1,18 @@
 import requests
 from dotenv import dotenv_values
+import os
 
-
-secrets = dotenv_values(".env")
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+secrets = dotenv_values(os.path.join(BASEDIR, '.env'))
 
 def main():
+
     # url = "https://api.themoviedb.org/3/authentication"
     url = "https://api.themoviedb.org/3/discover/movie"
 
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer "+secrets["API_BEARER"]
+        "Authorization": "Bearer " + secrets["API_BEARER"],
     }
 
     response = requests.get(url, headers=headers)
@@ -21,5 +23,6 @@ def main():
     f.write(response.text)
     f.close()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
