@@ -1,7 +1,10 @@
 import requests
+import json
+import FindMoviesSeries.DTO.Movie as MovieClass
+import FindMoviesSeries.DTO.Serie as SerieClass
 
-def retrieveMovies(bearer):    
-    # url = "https://api.themoviedb.org/3/authentication"
+
+def discoverMovies(bearer):
     url = "https://api.themoviedb.org/3/discover/movie"
 
     headers = {
@@ -10,11 +13,31 @@ def retrieveMovies(bearer):
     }
 
     response = requests.get(url, headers=headers)
+    decoded = json.decoder.JSONDecoder().decode(response.text)["results"]
 
-    print(response.text)
+    movies = []
+    for movieDict in decoded:
+        movie = MovieClass.Movie(**movieDict)
+        movies.append(movie)
 
-    f = open("result.json", "a", encoding="utf-8")
-    f.write(response.text)
-    f.close()
+    return movies
 
-    return response.text
+
+def discoverSeries(bearer):
+    url = "https://api.themoviedb.org/3/discover/tv"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer " + bearer,
+    }
+
+    response = requests.get(url, headers=headers)
+
+    decoded = json.decoder.JSONDecoder().decode(response.text)["results"]
+
+    series = []
+    for serieDict in decoded:
+        serie = SerieClass.Serie(**serieDict)
+        series.append(serie)
+
+    return series
