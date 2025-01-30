@@ -1,21 +1,16 @@
+from FindMoviesSeries.DTO.Value import Value
 import customtkinter
 from CTkListbox import *
 
 from FindMoviesSeries.backend import RetrieveInfo
 from FindMoviesSeries.ui.DetailFrame import DetailFrame
-from enum import Enum
-
-
-class Value(Enum):
-    MOVIE = 1
-    SERIE = 2
 
 
 class MainFrame(customtkinter.CTk):
     def discoverMoviesButtonClick(self):
-        movies = RetrieveInfo.discoverMovies(self.secrets["API_BEARER"])
+        movies = RetrieveInfo.discoverMovies(self.bearer)
 
-        self.value = Value.MOVIE
+        self.value = Value.movie
         self.valueDict = {}
         i = 0
         for movie in movies:
@@ -24,9 +19,9 @@ class MainFrame(customtkinter.CTk):
             i += 1
 
     def discoverSeriesButtonClick(self):
-        series = RetrieveInfo.discoverSeries(self.secrets["API_BEARER"])
+        series = RetrieveInfo.discoverSeries(self.bearer)
 
-        self.value = Value.SERIE
+        self.value = Value.tv
         self.valueDict = {}
         i = 0
         for serie in series:
@@ -37,14 +32,14 @@ class MainFrame(customtkinter.CTk):
     def selectListValue(self, selected_option):
         selectedValue = self.valueDict[selected_option]
 
-        if self.value == Value.MOVIE:
+        if self.value == Value.movie:
             self.details_frame.setMovieDetails(selectedValue)
-        if self.value == Value.SERIE:
+        if self.value == Value.tv:
             self.details_frame.setSerieDetails(selectedValue)
 
     def __init__(self, secrets):
         super().__init__()
-        self.secrets = secrets
+        self.bearer = secrets["API_BEARER"]
 
         customtkinter.set_appearance_mode("dark")
         self.title("FindMoviesSeries")
@@ -54,6 +49,21 @@ class MainFrame(customtkinter.CTk):
         self.grid_columnconfigure((0), weight=0)
         self.grid_rowconfigure(0, weight=1)
 
+        self.createSidebar()
+
+        self.results_list_frame = customtkinter.CTkFrame(
+            master=self, width=100, corner_radius=0
+        )
+        self.results_list_frame.grid(row=0, column=1, sticky="nsew")
+        self.results_list_frame.grid_rowconfigure(4, weight=1)
+
+        self.listbox = CTkListbox(self.results_list_frame, command=self.selectListValue)
+        self.listbox.pack(pady=0, padx=0, fill="both", expand=True)
+
+        self.details_frame = DetailFrame(self)
+        self.details_frame.grid(row=0, column=2, pady=0, padx=0, sticky="nsew")
+
+    def createSidebar(self):
         self.sidebar_frame = customtkinter.CTkFrame(
             master=self, width=50, corner_radius=0
         )
@@ -74,14 +84,7 @@ class MainFrame(customtkinter.CTk):
         )
         self.discoverSeriesButton.pack(pady=20, padx=20)
 
-        self.results_list_frame = customtkinter.CTkFrame(
-            master=self, width=100, corner_radius=0
-        )
-        self.results_list_frame.grid(row=0, column=1, sticky="nsew")
-        self.results_list_frame.grid_rowconfigure(4, weight=1)
+        genres = RetrieveInfo.getMovieGenres(self.bearer)
 
-        self.listbox = CTkListbox(self.results_list_frame, command=self.selectListValue)
-        self.listbox.pack(pady=0, padx=0, fill="both", expand=True)
+        print(len(genres))
 
-        self.details_frame = DetailFrame(self)
-        self.details_frame.grid(row=0, column=2, pady=0, padx=0, sticky="nsew")

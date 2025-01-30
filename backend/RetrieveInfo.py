@@ -2,6 +2,8 @@ import requests
 import json
 import FindMoviesSeries.DTO.Movie as MovieClass
 import FindMoviesSeries.DTO.Serie as SerieClass
+import FindMoviesSeries.DTO.Genre as GenreClass
+from FindMoviesSeries.DTO.Value import Value
 
 
 def sendRequest(bearer, url, page=0):
@@ -51,3 +53,20 @@ def discoverSeries(bearer):
         series.append(serie)
 
     return series
+
+def getGenres(bearer, valueType):
+    results = sendRequest(bearer, f"https://api.themoviedb.org/3/genre/{valueType.name}/list")
+    
+    genres = []
+    for result in results['genres']:
+        genre = GenreClass.Genre(**result)
+        genres.append(genre)
+
+    return genres
+
+def getMovieGenres(bearer):
+    return getGenres(bearer, Value.movie)
+
+def getSerieGenres(bearer):
+    return getGenres(bearer, Value.tv)
+
