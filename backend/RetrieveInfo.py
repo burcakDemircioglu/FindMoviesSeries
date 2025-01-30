@@ -16,3 +16,5 @@ def retrieveMovies(bearer):
     f = open("result.json", "a", encoding="utf-8")
     f.write(response.text)
     f.close()
+
+    return response.text
