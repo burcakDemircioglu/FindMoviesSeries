@@ -19,11 +19,24 @@ class DetailFrame(customtkinter.CTkFrame):
         self.overview_label = customtkinter.CTkLabel(master=self, wraplength=500, justify="left", text="")
         self.overview_label.grid(row=1, pady=0, padx=0)
 
-    def setDetails(self, movie):
+    def setMovieDetails(self, movie):
         self.title_label.configure(text=movie.title)
         self.overview_label.configure(text=movie.overview)
 
         posterUrl=f"https://image.tmdb.org/t/p/original{movie.poster_path}"
+        with urllib.request.urlopen(posterUrl) as u:
+            raw_data = u.read()
+
+        img=Image.open(io.BytesIO(raw_data))
+        img.thumbnail((300,300), Image.LANCZOS)
+        photoImage = ImageTk.PhotoImage(img)
+        self.poster.configure(image=photoImage)
+
+    def setSerieDetails(self, serie):
+        self.title_label.configure(text=serie.name)
+        self.overview_label.configure(text=serie.overview)
+
+        posterUrl=f"https://image.tmdb.org/t/p/original{serie.poster_path}"
         with urllib.request.urlopen(posterUrl) as u:
             raw_data = u.read()
 
