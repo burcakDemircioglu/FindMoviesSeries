@@ -1,5 +1,5 @@
 from enum import Enum
 
-class Value(Enum):
+class MediaType(Enum):
     movie = 1
     tv = 2
