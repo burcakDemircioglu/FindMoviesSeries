@@ -5,6 +5,10 @@ import FindMoviesSeries.DTO.Serie as SerieClass
 import FindMoviesSeries.DTO.Genre as GenreClass
 from FindMoviesSeries.DTO.Value import Value
 
+base_url = "https://api.themoviedb.org/3/"
+base_url_discover = f"{base_url}discover/"
+base_url_search = f"{base_url}search/"
+
 
 def sendRequest(bearer, url, page=0):
     headers = {
@@ -33,8 +37,8 @@ def getAll(bearer, url, maxPage=10):
     return decoded_results
 
 
-def discoverMovies(bearer, maxPage=10):
-    results = getAll(bearer, "https://api.themoviedb.org/3/discover/movie", maxPage)
+def getAllMovies(bearer, maxPage, url):
+    results = getAll(bearer, url, maxPage)
 
     movies = []
     for movieDict in results:
@@ -44,21 +48,18 @@ def discoverMovies(bearer, maxPage=10):
     return movies
 
 
-def discoverSeries(bearer):
-    results = getAll(bearer, "https://api.themoviedb.org/3/discover/tv")
+def getAllSeries(bearer, maxPage, url):
+    results = getAll(bearer, url, maxPage)
 
     series = []
     for serieDict in results:
         serie = SerieClass.Serie(**serieDict)
         series.append(serie)
-
     return series
 
 
 def getGenres(bearer, valueType):
-    results = sendRequest(
-        bearer, f"https://api.themoviedb.org/3/genre/{valueType.name}/list"
-    )
+    results = sendRequest(bearer, f"{base_url}genre/{valueType.name}/list")
 
     genres = []
     for result in results["genres"]:
@@ -66,6 +67,60 @@ def getGenres(bearer, valueType):
         genres.append(genre)
 
     return genres
+
+
+def discoverMovies(
+    bearer, maxPage=10, genre_ids=[], release_year="", origin_country=""
+):
+
+    filters = []
+    if not genre_ids:
+        filters.append(f"with_genres={",".join(genre_ids)}")
+    if not release_year:
+        filters.append(f"primary_release_year={release_year}")
+    if not origin_country:
+        filters.append(f"with_origin_country={origin_country}")
+
+    url = f"{base_url_discover}{Value.movie.name}"
+    if not filters:
+        url += f"?{"&".join(filters)}"
+
+    return getAllMovies(bearer, maxPage, url)
+
+
+def searchMovies(bearer, maxPage=10, searchText=""):
+
+    url = f"{base_url_discover}{Value.movie.name}"
+    if not searchText:
+        url += f"?query={searchText.replace(" ","+")}"
+
+    return getAllMovies(bearer, maxPage, url)
+
+
+def searchSeries(bearer, maxPage=10, searchText=""):
+
+    url = f"{base_url_discover}{Value.tv.name}"
+    if not searchText:
+        url += f"?query={searchText.replace(" ","+")}"
+
+    return getAllSeries(bearer, maxPage, url)
+
+
+def discoverSeries(bearer, maxPage=10, genre_ids=[], first_air_year="", origin_country=""
+):
+    filters = []
+    if not genre_ids:
+        filters.append(f"with_genres={",".join(genre_ids)}")
+    if not first_air_year:
+        filters.append(f"first_air_date_year={first_air_year}")
+    if not origin_country:
+        filters.append(f"with_origin_country={origin_country}")
+
+    url = f"{base_url_discover}{Value.tv.name}"
+    if not filters:
+        url += f"?{"&".join(filters)}"
+        
+    return getAllSeries(bearer, maxPage, url)
 
 
 def getMovieGenres(bearer):
