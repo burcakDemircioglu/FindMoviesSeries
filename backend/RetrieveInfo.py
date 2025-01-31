@@ -33,8 +33,8 @@ def getAll(bearer, url, maxPage=10):
     return decoded_results
 
 
-def discoverMovies(bearer):
-    results = getAll(bearer, "https://api.themoviedb.org/3/discover/movie")
+def discoverMovies(bearer, maxPage=10):
+    results = getAll(bearer, "https://api.themoviedb.org/3/discover/movie", maxPage)
 
     movies = []
     for movieDict in results:
@@ -54,19 +54,23 @@ def discoverSeries(bearer):
 
     return series
 
+
 def getGenres(bearer, valueType):
-    results = sendRequest(bearer, f"https://api.themoviedb.org/3/genre/{valueType.name}/list")
-    
+    results = sendRequest(
+        bearer, f"https://api.themoviedb.org/3/genre/{valueType.name}/list"
+    )
+
     genres = []
-    for result in results['genres']:
+    for result in results["genres"]:
         genre = GenreClass.Genre(**result)
         genres.append(genre)
 
     return genres
 
+
 def getMovieGenres(bearer):
     return getGenres(bearer, Value.movie)
 
+
 def getSerieGenres(bearer):
     return getGenres(bearer, Value.tv)
-
