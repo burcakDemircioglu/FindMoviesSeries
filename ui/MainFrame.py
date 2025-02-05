@@ -49,7 +49,8 @@ class MainFrame(customtkinter.CTk):
         self.infoRetriever = infoRetriever
 
         self.genres = self.infoRetriever.getGenres(MediaType.movie)
-
+        self.selectedGenreIds = []
+        
         customtkinter.set_appearance_mode("dark")
         self.title("FindMoviesSeries")
         self.geometry(f"1500x800")
