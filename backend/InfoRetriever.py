@@ -26,6 +26,8 @@ class InfoRetriever():
 
 
     def getAll(self, url, maxPage=10):
+        print(url)
+
         decoded_first = self.sendRequest(url)
         total_page = decoded_first["total_pages"]
         decoded_results = decoded_first["results"]
@@ -94,7 +96,8 @@ class InfoRetriever():
 
     def searchMovies(self, maxPage=10, searchText=""):
 
-        url = f"{base_url_discover}{MediaType.movie.name}"
+
+        url = f"{base_url_search}{MediaType.movie.name}"
         if searchText:
             url += f"?query={searchText.replace(" ","+")}"
 
@@ -103,7 +106,7 @@ class InfoRetriever():
 
     def searchSeries(self, maxPage=10, searchText=""):
 
-        url = f"{base_url_discover}{MediaType.tv.name}"
+        url = f"{base_url_search}{MediaType.tv.name}"
         if searchText:
             url += f"?query={searchText.replace(" ","+")}"
 
