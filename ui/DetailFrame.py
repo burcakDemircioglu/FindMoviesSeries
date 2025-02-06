@@ -12,8 +12,10 @@ class DetailFrame(customtkinter.CTkFrame):
 
         self.detailsFrame = customtkinter.CTkFrame(master=self)
         self.detailsFrame.grid(row=0, column=0, pady=0, padx=0)
+
         self.overviewFrame = customtkinter.CTkFrame(master=self)
         self.overviewFrame.grid(row=1, pady=0, padx=0)
+
         self.title_label = customtkinter.CTkLabel(
             master=self.detailsFrame,
             width=250,
@@ -34,7 +36,7 @@ class DetailFrame(customtkinter.CTkFrame):
             font=("Helvetica", 20),
             # bg_color="green",
         )
-        self.details_label.pack(pady=10, padx=10)
+        self.details_label.pack(pady=10, padx=0)
 
         self.poster = customtkinter.CTkLabel(
             master=self, width=250, height=200, justify="left", text=""
