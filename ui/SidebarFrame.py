@@ -65,11 +65,13 @@ class SidebarFrame(customtkinter.CTkFrame):
 
         self.releaseYearLabel = customtkinter.CTkLabel(self, text="Release year:")
         self.yearComboBox = customtkinter.CTkComboBox(master=self, values=["1", "2"])
+        self.yearComboBox.set("")
         self.releaseYearLabel.pack(pady=(10, 0), padx=20, anchor="nw")
         self.yearComboBox.pack(pady=5, padx=20)
 
-        self.countryLabel = customtkinter.CTkLabel(self, text="Origin year:")
+        self.countryLabel = customtkinter.CTkLabel(self, text="Origin country:")
         self.countryComboBox = customtkinter.CTkComboBox(master=self, values=["1", "2"])
+        self.countryComboBox.set("")
         self.countryLabel.pack(pady=(10, 0), padx=20, anchor="nw")
         self.countryComboBox.pack(pady=5, padx=20)
 
