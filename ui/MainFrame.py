@@ -41,7 +41,8 @@ class MainFrame(customtkinter.CTk):
         self.resetListBox(valueNameList)
 
     def resetListBox(self, values):
-        self.listbox.delete(0, customtkinter.END)
+        self.listbox.destroy()
+        self.generateMediaListBox()
 
         i = 0
         for value in values:
@@ -73,8 +74,7 @@ class MainFrame(customtkinter.CTk):
         self.results_list_frame.grid(row=0, column=1, sticky="nsew")
         self.results_list_frame.grid_rowconfigure(4, weight=1)
 
-        self.listbox = CTkListbox(self.results_list_frame, command=self.selectListValue)
-        self.listbox.pack(pady=0, padx=0, fill="both", expand=True)
+        self.generateMediaListBox()
         self.setDefaultMediaList()
 
         self.details_frame = DetailFrame(self)
@@ -82,3 +82,7 @@ class MainFrame(customtkinter.CTk):
         self.details_frame.setMovieDetails(
             self.genres, self.valueDict[list(self.valueDict.keys())[0]]
         )
+
+    def generateMediaListBox(self):
+        self.listbox = CTkListbox(self.results_list_frame, command=self.selectListValue)
+        self.listbox.pack(pady=0, padx=0, fill="both", expand=True)
